@@ -1,8 +1,9 @@
 package com.sammothe3.phantom;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerListener implements Listener {
@@ -12,32 +13,20 @@ public class PlayerListener implements Listener {
 		fl = Phantom;
 	}
 
+	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent e) {
-		if(e.getPlayer().getItemInHand().getType().equals(Material.FEATHER)&&e.getPlayer().hasPermission("phantom.fly")) {
-			if(!fl.hasFlown.contains(e.getPlayer())){
-				e.getPlayer().setAllowFlight(true);
-				fl.hasFlown.add(e.getPlayer());
-				@SuppressWarnings("unused")
-				Thread t = new Thread(Countdown(e.getPlayer()));
-			}
-			else {
-				e.getPlayer().sendMessage(Phantom.HasFlown);
+		if(e.getPlayer().getItemInHand().getType().equals(Material.FEATHER)&&(e.getPlayer().hasPermission("phantom.fly")||e.getPlayer().isOp())) {
+			if((e.getAction().equals(Action.LEFT_CLICK_AIR)) || (e.getAction().equals(Action.LEFT_CLICK_BLOCK))||(e.getAction().equals(Action.RIGHT_CLICK_AIR)) || (e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+				if(!fl.hasFlown.contains(e.getPlayer().getName())){
+					e.getPlayer().setAllowFlight(true);
+					fl.hasFlown.add(e.getPlayer().getName());
+					@SuppressWarnings("unused")
+					Countdown t = new Countdown(e.getPlayer(), fl);
+				}
+				else {
+					e.getPlayer().sendMessage(Phantom.HasFlown);
+				}	
 			}
 		}
-	}
-
-	private Runnable Countdown(Player player) {
-		try {
-			Thread.sleep(5000);
-			player.setAllowFlight(false);
-			Thread.sleep(60000);
-			fl.hasFlown.remove(player);
-		} catch (InterruptedException e) {
-			//Stop them flying, just in case the thread *somehow* gets mess with.
-			player.setAllowFlight(false);
-			//Also allow them to activate it again, just in case.
-			fl.hasFlown.remove(player);
-		}
-		return null;
 	}
 }

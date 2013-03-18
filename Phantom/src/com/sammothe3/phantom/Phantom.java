@@ -3,19 +3,21 @@ package com.sammothe3.phantom;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Phantom extends JavaPlugin {
 	
 	public static String HasFlown = null;
-	public List<Player> hasFlown = new ArrayList<Player>();
+	public static String Recharged = null;
+	public List<String> hasFlown = new ArrayList<String>();
 	PlayerListener pl = new PlayerListener(this);
 	
 	@Override
 	public void onEnable() {
-		HasFlown = this.getConfig().getString("HasFlown");
+		HasFlown = "You've already flown! Wait one minute.";
+		Recharged = "Flying recharged!";
 		this.getServer().getLogger().info("[Phantom] Phantom enabled!");
+		this.getServer().getPluginManager().registerEvents(pl, this);
 	}
 	
 	@Override
