@@ -1,4 +1,4 @@
 Phantom
 =======
 
-Simple flight plugin
+Simple flight plugin!
